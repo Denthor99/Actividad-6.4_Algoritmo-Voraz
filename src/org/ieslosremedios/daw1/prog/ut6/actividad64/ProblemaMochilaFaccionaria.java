@@ -3,79 +3,65 @@ package org.ieslosremedios.daw1.prog.ut6.actividad64;
 import java.util.Arrays;
 
 public class ProblemaMochilaFaccionaria extends EsquemaVoraz{
-
-    private int n;
-    private Double max;
+    // Valores de Entrada
+    //peso maximo
+    private Double pesoMaximo;
+    //numero de objetos
+    private int numObjetos;
+    //Peso del objeto
+    private Double [] peso;
+    //Valor del objeto
+    private Double [] valor;
+    //Peso Actual, variable auxiliar para controlar el peso
     private Double pesoActual;
 
-    private Double[] pesos;
-    private Double[] valores;
-
-    public ProblemaMochilaFaccionaria(int n, Double max, Double[] pesos, Double[] valores) {
-        this.n = n;
-        this.max = max;
-        this.pesos = pesos;
-        this.valores = valores;
+    public ProblemaMochilaFaccionaria(Double pesoMaximo, int numObjetos, Double[] peso, Double[] valor) {
+        this.pesoMaximo = pesoMaximo;
+        this.numObjetos = numObjetos;
+        this.peso = peso;
+        this.valor = valor;
     }
 
-    /**
-     * Calcular candidato
-     */
     @Override
-    protected void anotaEnSolucion() {
-        // TODO: CREAMOS UN CONDICIONAL, PUES DEBEMOS TENER EN CUENTA EL PESO
-        // peso actual 80, peso etapa 30
-        // 80+30<=max
-        if (pesoActual + pesos[etapa] <= max){
-            candidato=1;
-        } else { //TODO:
-            candidato=Double.valueOf((max - pesoActual)) / pesos[etapa];
-        }
+    protected void inicializa() {
+        solucion=new Object[numObjetos];
+        Arrays.fill(solucion,0);
+        pesoActual=0d;
 
-        solucion[etapa]=candidato;
-        pesoActual= Double.valueOf(pesoActual) + (Double)candidato * Double.valueOf(pesos[etapa]);
     }
 
-    /**
-     * @return
-     */
+    @Override
+    protected boolean fin() {
+        return pesoMaximo.equals(pesoActual);
+    }
+
+    @Override
+    protected void seleccionaYEliminaCandidato() {
+        Double mayor=valor[0]/peso[0];
+        etapa=0;
+        for (int i = 0; i < numObjetos; i++) {
+            if(mayor < Double.valueOf(valor[i])/peso[i]){
+                mayor=Double.valueOf(valor[i])/peso[i];
+                etapa=i;
+            }
+        }
+        valor[etapa]=0d;
+    }
+
     @Override
     protected boolean esPrometedor() {
         return true;
     }
 
-    /**
-     *
-     */
     @Override
-    protected void seleccionaYEliminaCandidato() {
-        Double mayor = Double.valueOf(valores[0])/pesos[0];
-        for (int i = 1; i < n; i++) {
-            if (mayor < Double.valueOf(valores[i])/pesos[i]) {
-                mayor = Double.valueOf(valores[i])/Double.valueOf(pesos[i]);
-                etapa=i;
-            }
+    protected void anotaEnSolucion() {
+        // Si el candidato entra entero en la mochila se mete entero
+        if (pesoActual + peso[etapa] <= pesoMaximo) {
+            candidato = 1d;
+        } else { // si sólo entra una parte se mete esa parte
+            candidato = Double.valueOf((pesoMaximo - pesoActual)) / peso[etapa];
         }
-        candidato = mayor;
-        // Elimina candidato
-        valores[etapa] = 0.0;
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    protected boolean fin() {
-        return max.equals(pesoActual);
-    }
-
-    /**
-     *
-     */
-    @Override
-    protected void inicializa() {
-        solucion = new Object[n];
-        Arrays.fill(solucion,0);
-        pesoActual = 0.0;
+        solucion[etapa] = candidato;
+        pesoActual = Double.valueOf(pesoActual) + candidato * Double.valueOf(peso[etapa]);
     }
 }

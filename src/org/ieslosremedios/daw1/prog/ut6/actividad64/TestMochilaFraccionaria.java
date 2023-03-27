@@ -9,7 +9,7 @@ public class TestMochilaFraccionaria {
         Double[] pesos = {10.0, 20.0, 30.0, 40.0, 50.0};
         Double[] valores = {20.0, 30.0, 66.0, 40.0, 60.0};
 
-        ProblemaMochilaFaccionaria pmf = new ProblemaMochilaFaccionaria(n, max, pesos, valores);
+        ProblemaMochilaFaccionaria pmf = new ProblemaMochilaFaccionaria(max,n,pesos,valores);
         pmf.voraz();
         System.out.println(Arrays.toString(pmf.solucion));
     }

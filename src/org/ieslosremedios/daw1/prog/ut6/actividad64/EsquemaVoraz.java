@@ -3,7 +3,7 @@ package org.ieslosremedios.daw1.prog.ut6.actividad64;
 public abstract class EsquemaVoraz {
     // Atributos internos del algoritmo
     Object[] solucion;
-    Object candidato;
+    Double candidato;
     int etapa;
     public void voraz () {
         inicializa();
